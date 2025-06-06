@@ -1,10 +1,14 @@
+// === Updated script.js ===
+
 let stopwatchInterval;
-let elapsedTime = 0;
+let startTime = 0;
+let pausedTime = 0;
+let running = false;
 
 function formatTime(ms) {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const hours = Math.floor((ms / (1000 * 60 * 60)));
     return (
         String(hours).padStart(2, '0') + ':' +
         String(minutes).padStart(2, '0') + ':' +
@@ -13,68 +17,53 @@ function formatTime(ms) {
 }
 
 function updateStopwatch() {
-    elapsedTime += 100;
-    document.querySelector('.stopwatch').textContent = formatTime(elapsedTime);
+    if (!running) return;
+    const now = Date.now();
+    const elapsed = now - startTime + pausedTime;
+    document.querySelector('.stopwatch').textContent = formatTime(elapsed);
 }
 
 function startStopwatch() {
-    if (!stopwatchInterval) {
-        stopwatchInterval = setInterval(updateStopwatch, 100);
-    }
+    if (running) return;
+    startTime = Date.now();
+    running = true;
+    stopwatchInterval = setInterval(updateStopwatch, 200);
 }
 
 function stopStopwatch() {
+    if (!running) return;
+    pausedTime += Date.now() - startTime;
+    running = false;
     clearInterval(stopwatchInterval);
-    stopwatchInterval = null;
 }
 
 function resetStopwatch() {
     stopStopwatch();
-    elapsedTime = 0;
-    document.querySelector('.stopwatch').textContent = formatTime(elapsedTime);
+    pausedTime = 0;
+    document.querySelector('.stopwatch').textContent = formatTime(0);
 }
 
 function saveDuration() {
-    if (elapsedTime === 0) {
+    const totalElapsed = running ? Date.now() - startTime + pausedTime : pausedTime;
+    if (totalElapsed === 0) {
         alert('Cannot save a duration of 0 seconds.');
         return;
     }
 
-    const durationsList = document.getElementById('durations-list');
-    const durationItem = document.createElement('li');
-    
-    const durationText = document.createElement('span');
-    durationText.textContent = formatTime(elapsedTime);
+    const now = new Date();
+    const dateKey = now.toISOString().split('T')[0];
+    const savedData = JSON.parse(localStorage.getItem('studyTracker')) || {};
 
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.onclick = function () {
-        durationsList.removeChild(durationItem);
-    };
+    if (savedData[dateKey]) {
+        savedData[dateKey] += totalElapsed;
+    } else {
+        savedData[dateKey] = totalElapsed;
+    }
 
-    durationItem.appendChild(durationText);
-    durationItem.appendChild(deleteButton);
-    durationsList.appendChild(durationItem);
+    localStorage.setItem('studyTracker', JSON.stringify(savedData));
+    alert(`Saved ${formatTime(totalElapsed)} on ${dateKey}`);
+    displayCalendar();
 }
-function setupDatePicker() {
-    const picker = document.getElementById('calendar-picker');
-    picker.addEventListener('change', () => {
-        const selectedDate = picker.value; // format: YYYY-MM-DD
-        const data = JSON.parse(localStorage.getItem('studyTracker')) || {};
-        const durationMs = data[selectedDate] || 0;
-
-        const display = document.getElementById('selected-date-duration');
-        if (durationMs === 0) {
-            display.textContent = `No study duration logged on ${selectedDate}.`;
-        } else {
-            display.textContent = `You studied for ${formatTime(durationMs)} on ${selectedDate}.`;
-        }
-    });
-}
-
-// On load
-setupDatePicker();
-
 
 function updateDate() {
     const dateElement = document.getElementById('current-date');
@@ -83,4 +72,56 @@ function updateDate() {
     dateElement.textContent = now.toLocaleDateString(undefined, options);
 }
 
+function displayCalendar() {
+    const container = document.getElementById('calendar-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const data = JSON.parse(localStorage.getItem('studyTracker')) || {};
+
+    for (const date in data) {
+        const entry = document.createElement('div');
+        entry.className = 'calendar-entry';
+        entry.textContent = `${date}: ${formatTime(data[date])}`;
+        container.appendChild(entry);
+    }
+}
+
+function setupDatePicker() {
+    const picker = document.getElementById('calendar-picker');
+    if (!picker) return;
+    picker.addEventListener('change', () => {
+        const selectedDate = picker.value;
+        const data = JSON.parse(localStorage.getItem('studyTracker')) || {};
+        const durationMs = data[selectedDate] || 0;
+        const display = document.getElementById('selected-date-duration');
+
+        if (durationMs === 0) {
+            display.textContent = `No study duration logged on ${selectedDate}.`;
+        } else {
+            display.textContent = `You studied for ${formatTime(durationMs)} on ${selectedDate}.`;
+        }
+    });
+}
+
+function setSeasonalWallpaper() {
+    const month = new Date().getMonth();
+    let season;
+
+    if (month >= 2 && month <= 4) season = 'spring';
+    else if (month >= 5 && month <= 7) season = 'summer';
+    else if (month >= 8 && month <= 10) season = 'autumn';
+    else season = 'winter';
+
+    const video = document.getElementById('myVideo');
+    const source = document.getElementById('video-source');
+    if (source) {
+        source.src = `${season}.mp4`;
+        video.load();
+    }
+}
+
+// On page load
 updateDate();
+displayCalendar();
+setupDatePicker();
+setSeasonalWallpaper();
