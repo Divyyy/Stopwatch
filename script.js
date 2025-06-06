@@ -56,6 +56,25 @@ function saveDuration() {
     durationItem.appendChild(deleteButton);
     durationsList.appendChild(durationItem);
 }
+function setupDatePicker() {
+    const picker = document.getElementById('calendar-picker');
+    picker.addEventListener('change', () => {
+        const selectedDate = picker.value; // format: YYYY-MM-DD
+        const data = JSON.parse(localStorage.getItem('studyTracker')) || {};
+        const durationMs = data[selectedDate] || 0;
+
+        const display = document.getElementById('selected-date-duration');
+        if (durationMs === 0) {
+            display.textContent = `No study duration logged on ${selectedDate}.`;
+        } else {
+            display.textContent = `You studied for ${formatTime(durationMs)} on ${selectedDate}.`;
+        }
+    });
+}
+
+// On load
+setupDatePicker();
+
 
 function updateDate() {
     const dateElement = document.getElementById('current-date');

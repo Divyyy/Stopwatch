@@ -92,3 +92,21 @@ button:active {
         padding: 10px 15px;
     }
 }
+.calendar-ui {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#calendar-picker {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: none;
+}
+
+#selected-date-duration {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #0f0; /* Green highlight */
+}
