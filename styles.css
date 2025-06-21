@@ -110,3 +110,43 @@ button:active {
     font-size: 1.2rem;
     color: #0f0; /* Green highlight */
 }
+
+
+
+.laps-section {
+    margin-top: 30px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.laps-section h2 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+#lap-list {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+#lap-list li {
+    margin: 6px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #00ffff; /
+    transition: background-color 0.3s;
+}
+
+#lap-list li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
