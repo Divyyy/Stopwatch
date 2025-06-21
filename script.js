@@ -1,10 +1,11 @@
-// === Updated script.js ===
-
 let stopwatchInterval;
 let startTime = 0;
 let pausedTime = 0;
 let running = false;
+let lastSavedTime = 0;
+let laps = [];
 
+// Format milliseconds into HH:MM:SS
 function formatTime(ms) {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
@@ -16,12 +17,14 @@ function formatTime(ms) {
     );
 }
 
+// Updates stopwatch display
 function updateStopwatch() {
     if (!running) return;
     const now = Date.now();
     const elapsed = now - startTime + pausedTime;
     document.querySelector('.stopwatch').textContent = formatTime(elapsed);
 }
+
 
 function startStopwatch() {
     if (running) return;
@@ -30,6 +33,7 @@ function startStopwatch() {
     stopwatchInterval = setInterval(updateStopwatch, 200);
 }
 
+
 function stopStopwatch() {
     if (!running) return;
     pausedTime += Date.now() - startTime;
@@ -37,16 +41,23 @@ function stopStopwatch() {
     clearInterval(stopwatchInterval);
 }
 
+
 function resetStopwatch() {
     stopStopwatch();
     pausedTime = 0;
+    lastSavedTime = 0;
+    laps = [];
     document.querySelector('.stopwatch').textContent = formatTime(0);
+    displayLaps(); // Clear lap list
 }
+
 
 function saveDuration() {
     const totalElapsed = running ? Date.now() - startTime + pausedTime : pausedTime;
-    if (totalElapsed === 0) {
-        alert('Cannot save a duration of 0 seconds.');
+    const unsavedDuration = totalElapsed - lastSavedTime;
+
+    if (unsavedDuration <= 0) {
+        alert('No new duration to save.');
         return;
     }
 
@@ -55,15 +66,17 @@ function saveDuration() {
     const savedData = JSON.parse(localStorage.getItem('studyTracker')) || {};
 
     if (savedData[dateKey]) {
-        savedData[dateKey] += totalElapsed;
+        savedData[dateKey] += unsavedDuration;
     } else {
-        savedData[dateKey] = totalElapsed;
+        savedData[dateKey] = unsavedDuration;
     }
 
     localStorage.setItem('studyTracker', JSON.stringify(savedData));
-    alert(`Saved ${formatTime(totalElapsed)} on ${dateKey}`);
+    lastSavedTime = totalElapsed;
+    alert(`Saved ${formatTime(unsavedDuration)} on ${dateKey}`);
     displayCalendar();
 }
+
 
 function updateDate() {
     const dateElement = document.getElementById('current-date');
@@ -71,6 +84,7 @@ function updateDate() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     dateElement.textContent = now.toLocaleDateString(undefined, options);
 }
+
 
 function displayCalendar() {
     const container = document.getElementById('calendar-container');
@@ -85,6 +99,7 @@ function displayCalendar() {
         container.appendChild(entry);
     }
 }
+
 
 function setupDatePicker() {
     const picker = document.getElementById('calendar-picker');
@@ -103,24 +118,27 @@ function setupDatePicker() {
     });
 }
 
-function setSeasonalWallpaper() {
-    const month = new Date().getMonth();
-    let season;
 
-    if (month >= 2 && month <= 4) season = 'spring';
-    else if (month >= 5 && month <= 7) season = 'summer';
-    else if (month >= 8 && month <= 10) season = 'autumn';
-    else season = 'winter';
 
-    const video = document.getElementById('myVideo');
-    const source = document.getElementById('video-source');
-    if (source) {
-        source.src = `${season}.mp4`;
-        video.load();
-    }
+function recordLap() {
+    const totalElapsed = running ? Date.now() - startTime + pausedTime : pausedTime;
+    laps.push(totalElapsed);
+    displayLaps();
 }
 
-// On page load
+function displayLaps() {
+    const list = document.getElementById('lap-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    laps.forEach((lapTime, index) => {
+        const li = document.createElement('li');
+        li.textContent = `Lap ${index + 1}: ${formatTime(lapTime)}`;
+        list.appendChild(li);
+    });
+}
+
+
 updateDate();
 displayCalendar();
 setupDatePicker();
