@@ -1,36 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stopwatch</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stopwatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <video autoplay muted loop id="myVideo">
-        <source src="1675814440-1675814440-halo-warthog-live-wallpaper.mp4" type="video/mp4">
-    </video>
-    <h1>STOPWATCH</h1>
-    <div class="stopwatch">00:00:00</div>
-    <div class="buttons">
-        <button onclick="startStopwatch()">Start</button>
-        <button onclick="stopStopwatch()">Stop</button>
-        <button onclick="resetStopwatch()">Reset</button>
-        <button onclick="saveDuration()">Save Duration</button>
-    </div>
-    <div class="saved-durations">
-        <h2>Saved Durations:</h2>
-        <ul id="durations-list"></ul>
-    </div>
-    <div class="date" id="current-date"></div>
-    <div class="calendar-ui">
+ 
+  <video autoplay muted loop id="myVideo">
+    <source id="video-source" src="1675814440-1675814440-halo-warthog-live-wallpaper.mp4" type="video/mp4">
+  </video>
+
+  <h1>STOPWATCH</h1>
+
+  <div class="stopwatch">00:00:00</div>
+
+>
+  <div class="buttons">
+    <button onclick="startStopwatch()">Start</button>
+    <button onclick="stopStopwatch()">Stop</button>
+    <button onclick="resetStopwatch()">Reset</button>
+    <button onclick="saveDuration()">Save Duration</button>
+    <button onclick="recordLap()">Lap</button>
+  </div>
+
+  
+  <div class="laps-section">
+    <h2>Laps</h2>
+    <ul id="lap-list"></ul> 
+  </div>
+
+
+  <div class="saved-durations">
+    <h2>Saved Durations:</h2>
+    <div id="calendar-container"></div> 
+  </div>
+
+
+  <div class="date" id="current-date"></div>
+
+
+  <div class="calendar-ui">
     <h2>Check Study Duration by Date</h2>
     <input type="date" id="calendar-picker">
     <p id="selected-date-duration"></p>
-</div>
+  </div>
 
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
