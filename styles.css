@@ -112,7 +112,6 @@ button:active {
 }
 
 
-
 .laps-section {
     margin-top: 30px;
     width: 80%;
@@ -123,7 +122,7 @@ button:active {
 .laps-section h2 {
     margin-bottom: 10px;
     font-size: 1.5rem;
-    color: #ffd700;
+    color: #ffd700; /* Optional: golden lap title */
 }
 
 #lap-list {
@@ -143,7 +142,7 @@ button:active {
     background-color: rgba(255, 255, 255, 0.1);
     font-family: 'Orbitron', sans-serif;
     font-size: 1rem;
-    color: #00ffff; /
+    color: #00ffff; /* Light cyan for lap time */
     transition: background-color 0.3s;
 }
 
