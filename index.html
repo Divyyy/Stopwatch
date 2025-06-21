@@ -15,33 +15,34 @@
 
   <h1>STOPWATCH</h1>
 
+  <!-- Stopwatch Display -->
   <div class="stopwatch">00:00:00</div>
 
-
+  <!-- Main Controls -->
   <div class="buttons">
     <button onclick="startStopwatch()">Start</button>
     <button onclick="stopStopwatch()">Stop</button>
     <button onclick="resetStopwatch()">Reset</button>
     <button onclick="saveDuration()">Save Duration</button>
-    <button onclick="recordLap()">Lap</button> 
+    <button onclick="recordLap()">Lap</button> <!-- NEW Lap Button -->
   </div>
 
- 
+  <!-- Lap List -->
   <div class="laps-section">
     <h2>Laps</h2>
     <ul id="lap-list"></ul> 
   </div>
 
-
+  <!-- Saved Durations Info -->
   <div class="saved-durations">
     <h2>Saved Durations:</h2>
     <div id="calendar-container"></div> 
   </div>
 
-
+  <!-- Current Date Display -->
   <div class="date" id="current-date"></div>
 
-
+  <!-- Calendar Picker -->
   <div class="calendar-ui">
     <h2>Check Study Duration by Date</h2>
     <input type="date" id="calendar-picker">
