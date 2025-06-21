@@ -25,7 +25,7 @@ function updateStopwatch() {
     document.querySelector('.stopwatch').textContent = formatTime(elapsed);
 }
 
-
+// Starts stopwatch
 function startStopwatch() {
     if (running) return;
     startTime = Date.now();
@@ -33,7 +33,7 @@ function startStopwatch() {
     stopwatchInterval = setInterval(updateStopwatch, 200);
 }
 
-
+// Stops stopwatch
 function stopStopwatch() {
     if (!running) return;
     pausedTime += Date.now() - startTime;
@@ -41,7 +41,7 @@ function stopStopwatch() {
     clearInterval(stopwatchInterval);
 }
 
-
+// Resets stopwatch and laps
 function resetStopwatch() {
     stopStopwatch();
     pausedTime = 0;
@@ -51,7 +51,7 @@ function resetStopwatch() {
     displayLaps(); // Clear lap list
 }
 
-
+// Save duration since last save
 function saveDuration() {
     const totalElapsed = running ? Date.now() - startTime + pausedTime : pausedTime;
     const unsavedDuration = totalElapsed - lastSavedTime;
@@ -77,7 +77,7 @@ function saveDuration() {
     displayCalendar();
 }
 
-
+// Update current date on screen
 function updateDate() {
     const dateElement = document.getElementById('current-date');
     const now = new Date();
@@ -85,7 +85,7 @@ function updateDate() {
     dateElement.textContent = now.toLocaleDateString(undefined, options);
 }
 
-
+// Show saved durations by date
 function displayCalendar() {
     const container = document.getElementById('calendar-container');
     if (!container) return;
@@ -100,7 +100,7 @@ function displayCalendar() {
     }
 }
 
-
+// Show saved time for a selected date
 function setupDatePicker() {
     const picker = document.getElementById('calendar-picker');
     if (!picker) return;
@@ -119,7 +119,7 @@ function setupDatePicker() {
 }
 
 
-
+// Laps 
 function recordLap() {
     const totalElapsed = running ? Date.now() - startTime + pausedTime : pausedTime;
     laps.push(totalElapsed);
@@ -138,7 +138,7 @@ function displayLaps() {
     });
 }
 
-
+// On page load
 updateDate();
 displayCalendar();
 setupDatePicker();
